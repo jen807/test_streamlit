@@ -13,8 +13,8 @@ st.sidebar.title("🔐 OpenAI API setting")
 api_key = st.sidebar.text_input("OpenAI API Key 입력", type="password")
 
 # 제목과 설명
-st.title("💬 GPT-4.1-mini Chat 앱")
-st.markdown("사용자의 질문을 받아 GPT의 답변을 출력합니다.")
+st.title("💬 GPT-4.1-mini Chat App")
+st.markdown("Get user's question / Print GPT's answer")
 
 # 위젯 1: 사용자 질문 입력
 question = st.text_input("💭 enter your question")
@@ -40,7 +40,7 @@ if st.button("📝 ask to GPT"):
                 max_tokens=max_tokens,
             )
             answer = response.choices[0].message.content
-            st.success("✅ GPT의 응답")
+            st.success("✅ GPT' answer")
             st.write(answer)
         except Exception as e:
-            st.error(f"❌ 오류 발생: {e}")
+            st.error(f"❌ ERROR: {e}")
