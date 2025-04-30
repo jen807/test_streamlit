@@ -13,12 +13,10 @@ except ImportError:
 st.sidebar.title("🔐 OpenAI API Settings")
 api_key = st.sidebar.text_input("Enter your OpenAI API Key", type="password")
 
-# Title and input
 st.title("💬 GPT-4.1-mini Chat App")
 question = st.text_input("💭 Enter your question:")
 max_tokens = st.slider("🔢 Max tokens", 10, 2048, 300)
 
-# GPT request
 if st.button("📝 Ask GPT"):
     if not api_key:
         st.warning("🔑 Please enter your OpenAI API key!")
