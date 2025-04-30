@@ -1,25 +1,14 @@
 import streamlit as st
-import openai
+from openai import OpenAI
 
-st.title("Minimal GPT Chat App")
+api_key = st.text_input("OpenAI API Key", type="password")
+client = OpenAI(api_key=api_key)
 
-api_key = st.text_input("Enter your OpenAI API Key", type="password")
-question = st.text_input("Your question:")
+st.title("OpenAI GPT model")
 
-if st.button("Ask"):
-    if not api_key or not question:
-        st.warning("Please enter both API key and question.")
-    else:
-        try:
-            client = openai.OpenAI(api_key=api_key)
-            response = client.chat.completions.create(
-                model="gpt-3.5-turbo",
-                messages=[{"role": "user", "content": question}],
-                temperature=0.7,
-                max_tokens=200,
-            )
-            st.success("Answer:")
-            st.write(response.choices[0].message.content)
-        except Exception as e:
-            st.error("❌ Error:")
-            st.code(str(e))
+prompt = st.text_area("User prompt")
+
+if st.button("Ask!", disabled=(len(prompt) == 0)):
+    response = client.responses.create(model="gpt-4.1-mini", input=prompt)
+
+    st.write(response.output_text)
