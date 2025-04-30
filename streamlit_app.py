@@ -2,45 +2,44 @@ import streamlit as st
 
 try:
     import openai
+    from openai import OpenAI
 except ImportError:
     st.error(
-        "❗️ openai 라이브러리가 설치되지 않았습니다. requirements.txt에 'openai'를 추가해주세요."
+        "❗️ The 'openai' library is not installed. Please add it to requirements.txt."
     )
     st.stop()
 
-# 사이드바에서 API 키 입력
-st.sidebar.title("🔐 OpenAI API setting")
-api_key = st.sidebar.text_input("OpenAI API Key 입력", type="password")
+# Sidebar: API key input
+st.sidebar.title("🔐 OpenAI API Settings")
+api_key = st.sidebar.text_input("Enter your OpenAI API Key", type="password")
 
-# 제목과 설명
+# Page title and description
 st.title("💬 GPT-4.1-mini Chat App")
-st.markdown("Get user's question / Print GPT's answer")
+st.markdown("Ask any question and get a response from GPT.")
 
-# 위젯 1: 사용자 질문 입력
-question = st.text_input("💭 enter your question")
+# Question input
+question = st.text_input("💭 Enter your question here:")
 
-# 위젯 2: 토큰 수 조절
-max_tokens = st.slider(
-    "🔢 maximum token number", min_value=10, max_value=2048, value=300
-)
+# Token limit slider
+max_tokens = st.slider("🔢 Max tokens", 10, 2048, 300)
 
-# 위젯 3: GPT 응답 버튼
-if st.button("📝 ask to GPT"):
+# Button to send the request
+if st.button("📝 Ask GPT"):
     if not api_key:
-        st.warning("🔑 enter your OpenAI API first!")
+        st.warning("🔑 Please enter your OpenAI API Key first!")
     elif not question:
-        st.warning("❓ ask question!")
+        st.warning("❓ Please enter a question!")
     else:
         try:
-            openai.api_key = api_key
-            response = openai.ChatCompletion.create(
-                model="gpt-4-1106-preview",  # 또는 "gpt-4.1-mini"
+            client = OpenAI(api_key=api_key)
+            response = client.chat.completions.create(
+                model="gpt-4-1106-preview",  # or "gpt-4.1-mini"
                 messages=[{"role": "user", "content": question}],
                 temperature=0.7,
                 max_tokens=max_tokens,
             )
             answer = response.choices[0].message.content
-            st.success("✅ GPT' answer")
+            st.success("✅ GPT's Response")
             st.write(answer)
         except Exception as e:
-            st.error(f"❌ ERROR: {e}")
+            st.error(f"❌ Error occurred: {e}")
