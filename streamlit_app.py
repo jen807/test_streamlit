@@ -33,7 +33,7 @@ if st.button("📝 Ask GPT"):
         try:
             client = OpenAI(api_key=api_key)
             response = client.chat.completions.create(
-                model="gpt-4-1106-preview",  # or "gpt-4.1-mini"
+                model="gpt-3.5-turbo",
                 messages=[{"role": "user", "content": question}],
                 temperature=0.7,
                 max_tokens=max_tokens,
