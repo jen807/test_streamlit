@@ -532,7 +532,7 @@ elif page == "도서관 챗봇":
 
     question = st.text_input("도서관 관련 질문을 입력하세요:")
 
-    if st.button("도서관에 물어보기"):
+    if st.button("도서관 챗봇에게 물어보기"):
         if not client:
             st.warning("API Key를 먼저 입력하세요.")
         elif not question:
