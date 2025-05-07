@@ -101,9 +101,14 @@ elif page == "Chat":
     user_input = st.chat_input("메시지를 입력하세요")
 
 if user_input:
-    st.chat_message("user").write(user_input)
+    # 사용자 메시지를 먼저 바로 보여주기
+    with st.chat_message("user"):
+        st.write(user_input)
+
+    # 세션 기록에 저장
     st.session_state.chat_history.append({"role": "user", "content": user_input})
 
+    # assistant 메시지 처리
     with st.chat_message("assistant"):
         with st.spinner("Thinking..."):
             res = client.chat.completions.create(
