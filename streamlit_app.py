@@ -87,7 +87,6 @@ if page == "GPT 응답":
                 )
                 st.write(res.choices[0].message.content)
 
-
 # 2. Chat
 elif page == "Chat":
     st.title("💬 Chat with GPT-4.1-mini")
@@ -116,13 +115,12 @@ elif page == "Chat":
     if st.button("🧹 Clear"):
         st.session_state.chat_history = []
 
-
 # 3. 도서관 챗봇
 elif page == "도서관 챗봇":
     st.title("📚 부경대 도서관 챗봇")
 
     library_rules = """
-  국립부경대학교 도서관 규정
+    국립부경대학교 도서관 규정
 [시행 2023.12.27.] [부경대학교학교규정 제1316호, 2023.12.27., 타법개정]
 도서관 학술정보과, 0516296702
 
@@ -530,8 +528,6 @@ elif page == "도서관 챗봇":
 제3조(글로벌정책대학원 모집단위 변경에 따른 경과조치) 이 학칙 시행으로 폐지된 “일본학과” 재적생은 졸업 시까지 동 전공에 재적하는 것으로 본다.
 
 제4조(다른 규정의 개정) 본교 제 규정의 제명 및 내용 중 “부경대학교”는 “국립부경대학교”로 한다.
-
-
     """
 
     question = st.text_input("도서관 관련 질문을 입력하세요:")
@@ -555,7 +551,6 @@ elif page == "도서관 챗봇":
                 model="gpt-4.1-mini", messages=[{"role": "user", "content": prompt}]
             )
             st.write(res.choices[0].message.content)
-
 
 # 4. ChatPDF (PDF 챗봇)
 elif page == "ChatPDF":
@@ -590,7 +585,7 @@ elif page == "ChatPDF":
             )
             st.write(res.choices[0].message.content)
 
-        if st.button("🧹 Vector Store Clear (예시 버튼)"):
-            st.info(
-                "Vector store 삭제 기능은 실제로 구현되어 있지 않지만, 이 위치에 들어갈 수 있습니다."
-            )
+        if st.button("🧹 Vector Store Clear"):
+            if "pdf_text" in st.session_state:
+                del st.session_state["pdf_text"]
+            st.success("🧹 Vector store 캐시 삭제 완료!")
