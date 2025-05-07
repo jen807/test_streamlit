@@ -48,7 +48,6 @@
 
 import streamlit as st
 from openai import OpenAI
-import os
 from PyPDF2 import PdfReader
 
 # 세션 상태에 API 키 저장
@@ -65,12 +64,8 @@ page = st.sidebar.selectbox(
     "📄 페이지 선택", ["GPT 응답", "Chat", "도서관 챗봇", "ChatPDF"]
 )
 
-# 공통 클라이언트
-if st.session_state.api_key:
-    client = OpenAI(api_key=st.session_state.api_key)
-else:
-    client = None
-
+# OpenAI Client 생성
+client = OpenAI(api_key=st.session_state.api_key) if st.session_state.api_key else None
 
 # 1. GPT 응답
 if page == "GPT 응답":
@@ -126,8 +121,8 @@ elif page == "Chat":
 elif page == "도서관 챗봇":
     st.title("📚 부경대 도서관 챗봇")
 
-    규정집 = """
-    국립부경대학교 도서관 규정
+    library_rules = """
+  국립부경대학교 도서관 규정
 [시행 2023.12.27.] [부경대학교학교규정 제1316호, 2023.12.27., 타법개정]
 도서관 학술정보과, 0516296702
 
@@ -539,22 +534,22 @@ elif page == "도서관 챗봇":
 
     """
 
-    질문 = st.text_input("도서관 관련 질문을 입력하세요:")
+    question = st.text_input("도서관 관련 질문을 입력하세요:")
 
     if st.button("도서관에 물어보기"):
         if not client:
             st.warning("API Key를 먼저 입력하세요.")
-        elif not 질문:
+        elif not question:
             st.warning("질문을 입력해주세요.")
         else:
             prompt = f"""
             다음은 국립부경대학교 도서관의 규정입니다:
 
-            {규정집}
+            {library_rules}
 
             위 규정을 바탕으로 사용자의 질문에 답하세요:
 
-            질문: {질문}
+            질문: {question}
             """
             res = client.chat.completions.create(
                 model="gpt-4.1-mini", messages=[{"role": "user", "content": prompt}]
@@ -568,31 +563,34 @@ elif page == "ChatPDF":
 
     uploaded_file = st.file_uploader("PDF 파일을 업로드하세요", type=["pdf"])
 
-    if uploaded_file is not None:
+    @st.cache_data(show_spinner="📥 PDF 텍스트 추출 중...")
+    def extract_text_from_pdf(uploaded_file):
         reader = PdfReader(uploaded_file)
-        text = "\n".join(
+        return "\n".join(
             [page.extract_text() for page in reader.pages if page.extract_text()]
         )
 
+    if uploaded_file is not None:
+        pdf_text = extract_text_from_pdf(uploaded_file)
         st.success("📘 PDF에서 텍스트 추출 완료!")
 
-        질문 = st.text_area("질문을 입력하세요:")
+        question = st.text_area("질문을 입력하세요:")
         if st.button("질문하기"):
             prompt = f"""
             다음은 사용자가 업로드한 PDF의 내용입니다:
 
-            {text[:3000]}
+            {pdf_text[:3000]}
 
             위 내용을 바탕으로 사용자의 질문에 답하세요:
 
-            질문: {질문}
+            질문: {question}
             """
             res = client.chat.completions.create(
                 model="gpt-4.1-mini", messages=[{"role": "user", "content": prompt}]
             )
             st.write(res.choices[0].message.content)
 
-        if st.button("🧹 Vector Store Clear"):
+        if st.button("🧹 Vector Store Clear (예시 버튼)"):
             st.info(
-                "Vector store 삭제 기능은 여기에 구현될 수 있습니다. 현재는 생략됨."
+                "Vector store 삭제 기능은 실제로 구현되어 있지 않지만, 이 위치에 들어갈 수 있습니다."
             )
