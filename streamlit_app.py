@@ -100,18 +100,18 @@ elif page == "Chat":
 
     user_input = st.chat_input("메시지를 입력하세요")
 
-    if user_input:
-        st.session_state.chat_history.append({"role": "user", "content": user_input})
-        with st.chat_message("assistant"):
-            with st.spinner("Thinking..."):
-                res = client.chat.completions.create(
-                    model="gpt-4.1-mini", messages=st.session_state.chat_history
-                )
-                msg = res.choices[0].message.content
-                st.session_state.chat_history.append(
-                    {"role": "assistant", "content": msg}
-                )
-                st.write(msg)
+if user_input:
+    st.chat_message("user").write(user_input)
+    st.session_state.chat_history.append({"role": "user", "content": user_input})
+
+    with st.chat_message("assistant"):
+        with st.spinner("Thinking..."):
+            res = client.chat.completions.create(
+                model="gpt-4.1-mini", messages=st.session_state.chat_history
+            )
+            msg = res.choices[0].message.content
+            st.session_state.chat_history.append({"role": "assistant", "content": msg})
+            st.write(msg)
 
     if st.button("🧹 Clear"):
         st.session_state.chat_history = []
