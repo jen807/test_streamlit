@@ -95,15 +95,21 @@ elif page == "Chat":
     if "chat_history" not in st.session_state:
         st.session_state.chat_history = []
 
+    # 이전 채팅 기록 표시
     for msg in st.session_state.chat_history:
         st.chat_message(msg["role"]).write(msg["content"])
 
+    # Clear 버튼을 이 위치로 옮겨야 함!
+    if st.button("🧹 Clear"):
+        st.session_state.chat_history = []
+        st.rerun()  # 👈 rerun()으로 바로 반영되게 해줌
+
+    # 사용자 입력
     user_input = st.chat_input("메시지를 입력하세요")
 
-    if user_input:  # ✅ 들여쓰기 수정해서 이 조건문이 이 블록 안에서만 실행되게
+    if user_input:
         with st.chat_message("user"):
             st.write(user_input)
-
         st.session_state.chat_history.append({"role": "user", "content": user_input})
 
         with st.chat_message("assistant"):
