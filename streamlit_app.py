@@ -100,26 +100,26 @@ elif page == "Chat":
 
     user_input = st.chat_input("메시지를 입력하세요")
 
-if user_input:
-    # 사용자 메시지를 먼저 바로 보여주기
-    with st.chat_message("user"):
-        st.write(user_input)
+    if user_input:  # ✅ 들여쓰기 수정해서 이 조건문이 이 블록 안에서만 실행되게
+        with st.chat_message("user"):
+            st.write(user_input)
 
-    # 세션 기록에 저장
-    st.session_state.chat_history.append({"role": "user", "content": user_input})
+        st.session_state.chat_history.append({"role": "user", "content": user_input})
 
-    # assistant 메시지 처리
-    with st.chat_message("assistant"):
-        with st.spinner("Thinking..."):
-            res = client.chat.completions.create(
-                model="gpt-4.1-mini", messages=st.session_state.chat_history
-            )
-            msg = res.choices[0].message.content
-            st.session_state.chat_history.append({"role": "assistant", "content": msg})
-            st.write(msg)
+        with st.chat_message("assistant"):
+            with st.spinner("Thinking..."):
+                res = client.chat.completions.create(
+                    model="gpt-4.1-mini", messages=st.session_state.chat_history
+                )
+                msg = res.choices[0].message.content
+                st.session_state.chat_history.append(
+                    {"role": "assistant", "content": msg}
+                )
+                st.write(msg)
 
-    if st.button("🧹 Clear"):
-        st.session_state.chat_history = []
+        if st.button("🧹 Clear"):
+            st.session_state.chat_history = []
+
 
 # 3. 도서관 챗봇
 elif page == "도서관 챗봇":
