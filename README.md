@@ -1,4 +1,4 @@
-# 🧪 Test Repository for Streamlit Lab  
+# Test Repository for Streamlit Lab  
 **Repository for test Streamlit in Generative AI Programming Lab**
 
 ---
